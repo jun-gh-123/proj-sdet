@@ -3,13 +3,58 @@ services:
     build: .
     ports:
       - "3000:3000"
+    environment:
+      DATABASE_URL: postgres://pg:pg@db:5432/appdb
+    depends_on:
+      seed:
+        condition: service_completed_successfully
+    command: npm run start
 
   db:
-    image: postgres
+    image: postgres:16
+    environment:
+      POSTGRES_USER: pg
+      POSTGRES_PASSWORD: pg
+      POSTGRES_DB: appdb
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+  migrate:
+    image: node:20
+    working_dir: /app
+    volumes:
+      - .:/app
+    environment:
+      DATABASE_URL: postgres://pg:pg@db:5432/appdb
+    depends_on:
+      db:
+        condition: service_healthy
+    command: npm run migrate
+    restart: "no"
+
+  seed:
+    image: node:20
+    container_name: db_seed
+    working_dir: /app
+    volumes:
+      - .:/app
+    environment:
+      DATABASE_URL: postgres://pg:pg@db:5432/appdb
+    depends_on:
+      db:
+        condition: service_healthy
+    command: npm run seed
+    restart: "no"
 
   e2e:
     image: mcr.microsoft.com/playwright:v1.57.0-noble
+    working_dir: /app
     command: npx playwright test
     profiles: ["e2e"]
     depends_on:
       - app
+
+volumes:
+  pgdata:
