@@ -4,7 +4,9 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "node src/index.js",
+    "start": "nodemon src/index.js",
+    "migrate": "node db/migrate.mjs",
+    "seed": "node db/seed.mjs",
     "test:db": "jest tests/db"
   },
   "keywords": [],
@@ -16,8 +18,9 @@
     "pg": "^8.11.0"
   },
   "devDependencies": {
-    "jest": "^29.6.1",
     "@playwright/test": "^1.57.0",
-    "@types/node": "^25.0.9"
+    "@types/node": "^25.0.9",
+    "jest": "^29.6.1",
+    "nodemon": "^3.1.11"
   }
 }

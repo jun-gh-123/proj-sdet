@@ -5,10 +5,13 @@ services:
       - "3000:3000"
     environment:
       DATABASE_URL: postgres://pg:pg@db:5432/appdb
+    command: sh -c "npm run migrate && npm run start"
+    volumes:
+      - ./:/app
+      - /app/node_modules
     depends_on:
-      seed:
-        condition: service_completed_successfully
-    command: npm run start
+      db:
+        condition: service_healthy
 
   db:
     image: postgres:16
@@ -20,33 +23,11 @@ services:
       - "5432:5432"
     volumes:
       - pgdata:/var/lib/postgresql/data
-
-  migrate:
-    image: node:20
-    working_dir: /app
-    volumes:
-      - .:/app
-    environment:
-      DATABASE_URL: postgres://pg:pg@db:5432/appdb
-    depends_on:
-      db:
-        condition: service_healthy
-    command: npm run migrate
-    restart: "no"
-
-  seed:
-    image: node:20
-    container_name: db_seed
-    working_dir: /app
-    volumes:
-      - .:/app
-    environment:
-      DATABASE_URL: postgres://pg:pg@db:5432/appdb
-    depends_on:
-      db:
-        condition: service_healthy
-    command: npm run seed
-    restart: "no"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U pg -d appdb"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
 
   e2e:
     image: mcr.microsoft.com/playwright:v1.57.0-noble

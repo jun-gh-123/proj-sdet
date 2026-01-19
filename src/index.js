@@ -6,7 +6,7 @@ const PORT = 3000;
 app.use(express.json());
 
 // Example route
-app.get("/", (req, res) => res.send("Hello SDET!"));
+app.get("/", (req, res) => res.send("Hello SDET3!"));
 app.use("/users", require("./routes/users"));
 
 // Start server
