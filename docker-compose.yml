@@ -30,12 +30,15 @@ services:
       retries: 5
 
   e2e:
-    image: mcr.microsoft.com/playwright:v1.57.0-noble
-    working_dir: /app
-    command: npx playwright test
-    profiles: ["e2e"]
+    build:
+      context: .
+      dockerfile: Dockerfile.e2e
+    profiles:
+      - e2e
     depends_on:
       - app
+    volumes:
+      - ./e2e:/app/e2e
 
 volumes:
   pgdata:

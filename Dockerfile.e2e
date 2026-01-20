@@ -1,0 +1,15 @@
+FROM mcr.microsoft.com/playwright:v1.57.0-noble
+
+# Set working directory
+WORKDIR /app
+
+# Copy package.json & install dependencies
+COPY package.json package-lock.json ./
+RUN npm ci
+
+# Install Playwright browsers
+RUN npx playwright install --with-deps
+
+# Copy the test code
+COPY ./e2e ./e2e
+
