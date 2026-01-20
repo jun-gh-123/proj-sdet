@@ -38,7 +38,7 @@ services:
     depends_on:
       - app
     volumes:
-      - ./e2e:/app/e2e
+      - ./tests/e2e:/app/e2e
       - ./db:/app/db
 
 volumes:
