@@ -9,4 +9,4 @@ Simple project for learning SDET things:
 ## Commands
 
 1. Start docker containers (app and db): `npm run docker:up`
-2. Run e2e: `npm run test:e2e`
+2. Run full test (unit, integration, e2e): `npm run test:full`
