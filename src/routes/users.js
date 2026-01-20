@@ -7,11 +7,49 @@ const pool = new Pool({
     process.env.DATABASE_URL || "postgres://postgres:postgres@db:5432/appdb",
 });
 
+// api
 router.get("/", async (req, res) => {
-  const result = await pool.query("SELECT * FROM users");
+  const { email } = req.query;
+
+  let result;
+  if (email) {
+    result = await pool.query("SELECT * FROM users WHERE email = $1", [email]);
+  } else {
+    result = await pool.query("SELECT * FROM users");
+  }
+
   res.json(result.rows);
 });
 
+router.post("/", async (req, res) => {
+  const { name, email } = req.body;
+  const result = await pool.query(
+    "INSERT INTO users (name, email) VALUES ($1, $2) RETURNING *",
+    [name, email]
+  );
+  res.status(201).json(result.rows[0]);
+});
+
+router.delete("/", async (req, res) => {
+  const { email } = req.query;
+
+  if (!email) {
+    return res.status(400).json({ error: "Email required." });
+  }
+
+  const result = await pool.query(
+    "DELETE FROM users WHERE email=$1 RETURNING *",
+    [email]
+  );
+
+  if (result.rowCount === 0) {
+    return res.status(404).json({ error: "User not found." });
+  }
+
+  res.status(200).json(result.rows[0]);
+});
+
+// front end
 router.get("/view", async (req, res) => {
   const result = await pool.query("SELECT * FROM users");
 
@@ -23,15 +61,6 @@ router.get("/view", async (req, res) => {
   html += "</table>";
 
   res.send(html);
-});
-
-router.post("/", async (req, res) => {
-  const { name, email } = req.body;
-  const result = await pool.query(
-    "INSERT INTO users (name, email) VALUES ($1, $2) RETURNING *",
-    [name, email]
-  );
-  res.status(201).json(result.rows[0]);
 });
 
 module.exports = router;
