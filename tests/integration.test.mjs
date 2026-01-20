@@ -1,4 +1,9 @@
-const { createUser, deleteUser, getUser, getAllUsers } = require("../src/api");
+import {
+  createUser,
+  deleteUser,
+  getUser,
+  getAllUsers,
+} from "../src/public/api";
 
 const ts = Date.now();
 const testUser = {

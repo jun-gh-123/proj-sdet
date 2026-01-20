@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "nodemon src/index.js",
+    "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js",
     "db:migrate": "node db/migrate.mjs",
     "db:seed": "node db/seed.mjs",
     "db:unseed": "node db/unseed.mjs",
@@ -17,8 +18,8 @@
     "docker:db:reset": "docker compose run --rm app npm run db:reset",
     "docker:unit": "docker compose run --rm app npm run jest:unit",
     "docker:integ": "docker compose run --rm app npm run jest:integ",
-    "jest:unit": "jest tests/unit.test.js",
-    "jest:integ": "jest tests/integration.test.js",
+    "jest:unit": "npm test tests/unit.test.mjs",
+    "jest:integ": "npm test tests/integration.test.mjs",
     "test:e2e": "npm run docker:db:seed && npm run docker:e2e; npm run docker:db:unseed",
     "test:unit": "npm run docker:unit",
     "test:integ": "npm run docker:integ",
