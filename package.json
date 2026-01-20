@@ -13,9 +13,12 @@
     "docker:e2e": "docker compose --profile e2e run --rm e2e",
     "docker:seed": "docker compose run --rm app npm run db:seed",
     "docker:unseed": "docker compose run --rm app npm run db:unseed",
+    "jest:unit": "jest tests/unit.test.js",
+    "jest:integ": "jest tests/integration.test.js",
     "test:e2e": "npm run docker:seed && npm run docker:e2e; npm run docker:unseed",
-    "test:unit": "jest tests/unit",
-    "test:integ": "jest tests/integration"
+    "test:unit": "docker compose run --rm app npm run jest:unit",
+    "test:integ": "docker compose run --rm app npm run jest:integ",
+    "test:full": "npm run test:unit; npm run test:integ; npm run test:e2e"
   },
   "keywords": [],
   "author": "",
