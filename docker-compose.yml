@@ -5,7 +5,7 @@ services:
       - "3000:3000"
     environment:
       DATABASE_URL: postgres://pg:pg@db:5432/appdb
-    command: sh -c "npm run migrate && npm run start"
+    command: sh -c "npm run db:migrate && npm run start"
     volumes:
       - ./:/app
       - /app/node_modules
@@ -39,6 +39,7 @@ services:
       - app
     volumes:
       - ./e2e:/app/e2e
+      - ./db:/app/db
 
 volumes:
   pgdata:

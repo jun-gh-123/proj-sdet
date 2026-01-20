@@ -5,9 +5,17 @@
   "main": "index.js",
   "scripts": {
     "start": "nodemon src/index.js",
-    "migrate": "node db/migrate.mjs",
-    "seed": "node db/seed.mjs",
-    "test:db": "jest tests/db"
+    "db:migrate": "node db/migrate.mjs",
+    "db:seed": "node db/seed.mjs",
+    "db:unseed": "node db/unseed.mjs",
+    "docker:up": "docker compose up",
+    "docker:down": "docker compose down",
+    "docker:e2e": "docker compose --profile e2e run --rm e2e",
+    "docker:seed": "docker compose run --rm app npm run db:seed",
+    "docker:unseed": "docker compose run --rm app npm run db:unseed",
+    "test:e2e": "npm run docker:seed && npm run docker:e2e; npm run docker:unseed",
+    "test:unit": "jest tests/unit",
+    "test:integ": "jest tests/integration"
   },
   "keywords": [],
   "author": "",

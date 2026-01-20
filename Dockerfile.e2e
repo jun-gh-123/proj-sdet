@@ -13,3 +13,6 @@ RUN npx playwright install --with-deps
 # Copy the test code
 COPY ./e2e ./e2e
 
+# run npm playwright test
+CMD ["npx", "playwright", "test"]
+

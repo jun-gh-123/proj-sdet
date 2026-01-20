@@ -8,13 +8,8 @@ const client = new pg.Client({
 
 await client.connect();
 
-for (const user of seed_vals.users) {
-  await client.query(
-    `
-    INSERT INTO users (name, email)
-    VALUES ($1, $2)`,
-    [user.name, user.email]
-  );
-}
+await client.query(`DELETE FROM users WHERE email = ANY($1)`, [
+  seed_vals.users.map((user) => user.email),
+]);
 
 await client.end();
