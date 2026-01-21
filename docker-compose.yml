@@ -1,9 +1,18 @@
 services:
   app:
-    build: .
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        http_proxy: ${http_proxy}
+        https_proxy: ${https_proxy}
+        NO_PROXY: localhost,app
     ports:
       - "3000:3000"
     environment:
+      http_proxy: ${http_proxy}
+      https_proxy: ${https_proxy}
+      NO_PROXY: localhost,app
       DATABASE_URL: postgres://pg:pg@db:5432/appdb
     command: sh -c "npm run db:migrate && npm run start"
     volumes:
@@ -37,6 +46,8 @@ services:
       - e2e
     depends_on:
       - app
+    environment:
+      NO_PROXY: localhost,app
     volumes:
       - ./tests/e2e:/app/e2e
       - ./db:/app/db

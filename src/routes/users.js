@@ -3,10 +3,20 @@ const path = require("path");
 const router = express.Router();
 const { Pool } = require("pg");
 
+const { validateName, validateEmail } = require("../public/lib.mjs");
+
 const pool = new Pool({
   connectionString:
     process.env.DATABASE_URL || "postgres://postgres:postgres@db:5432/appdb",
 });
+
+function respond(req, resHTML, resJSON) {
+  if (req.headers.accept && req.headers.accept.includes("text/html")) {
+    return resHTML();
+  }
+
+  return resJSON();
+}
 
 // api
 router.get("/", async (req, res) => {
@@ -24,11 +34,49 @@ router.get("/", async (req, res) => {
 
 router.post("/", async (req, res) => {
   const { name, email } = req.body;
-  const result = await pool.query(
-    "INSERT INTO users (name, email) VALUES ($1, $2) RETURNING *",
-    [name, email]
+
+  const errors = {};
+  const formData = { name, email };
+  const nameValidation = validateName(name);
+  const emailValidation = validateEmail(email);
+
+  if (!nameValidation.valid) {
+    errors.name = nameValidation.reason;
+  }
+
+  if (!emailValidation.valid) {
+    errors.email = emailValidation.reason;
+  }
+
+  if (errors.name || errors.email) {
+    return respond(
+      req,
+      () => res.render("create-user", { errors, formData }),
+      () => res.status(201).json(errors)
+    );
+  }
+
+  let result;
+  try {
+    result = await pool.query(
+      "INSERT INTO users (name, email) VALUES ($1, $2) RETURNING *",
+      [name, email]
+    );
+  } catch (err) {
+    errors.form = err.message;
+
+    return respond(
+      req,
+      () => res.render("create-user", { errors, formData }),
+      () => res.status(400).json(errors)
+    );
+  }
+
+  return respond(
+    req,
+    () => res.redirect("/users/view"),
+    () => res.status(201).json(result.rows[0])
   );
-  res.status(201).json(result.rows[0]);
 });
 
 router.delete("/", async (req, res) => {
@@ -62,6 +110,10 @@ router.get("/view", async (req, res) => {
   html += "</table>";
 
   res.send(html);
+});
+
+router.get("/new", async (req, res) => {
+  res.render("create-user", { errors: {} });
 });
 
 module.exports = router;

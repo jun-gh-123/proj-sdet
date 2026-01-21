@@ -37,6 +37,7 @@
     "@playwright/test": "^1.57.0",
     "@types/node": "^25.0.9",
     "jest": "^29.6.1",
-    "nodemon": "^3.1.11"
+    "nodemon": "^3.1.11",
+    "pug": "^3.0.3"
   }
 }
