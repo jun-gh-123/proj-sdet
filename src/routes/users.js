@@ -29,7 +29,11 @@ router.get("/", async (req, res) => {
     result = await pool.query("SELECT * FROM users");
   }
 
-  res.json(result.rows);
+  return respond(
+    req,
+    () => res.render("all-users", { users: result.rows }),
+    () => res.json(result.rows)
+  );
 });
 
 router.post("/", async (req, res) => {
@@ -99,19 +103,6 @@ router.delete("/", async (req, res) => {
 });
 
 // front end
-router.get("/view", async (req, res) => {
-  const result = await pool.query("SELECT * FROM users");
-
-  let html = "<h1>All Users</h1>";
-  html += '<table id="users-table"><tr><th>Name</th><th>Email</th></tr>';
-  for (const user of result.rows) {
-    html += `<tr><td>${user.name}</td><td>${user.email}</td></tr>`;
-  }
-  html += "</table>";
-
-  res.send(html);
-});
-
 router.get("/new", async (req, res) => {
   res.render("create-user", { errors: {} });
 });

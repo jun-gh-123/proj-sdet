@@ -1,0 +1,16 @@
+doctype html
+html
+  head
+    title All Users
+  body
+    h1 All Users
+    table#users-table
+      thead
+        tr
+          th Name
+          th Email
+      tbody
+        each user in users
+          tr
+            td= user.name
+            td= user.email

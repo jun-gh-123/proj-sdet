@@ -15,7 +15,7 @@ test("Base Page", async ({ page }) => {
 
   const link = page.getByRole("link", { name: "View All Users" });
   await expect(link).toBeVisible();
-  await expect(link).toHaveAttribute("href", "./users/view");
+  await expect(link).toHaveAttribute("href", "./users");
 });
 
 test("View All Users link", async ({ page }) => {
