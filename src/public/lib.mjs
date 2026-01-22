@@ -1,7 +1,7 @@
 export function validateName(name) {
   const nameMinLength = 3;
 
-  if (name.length >= nameMinLength) {
+  if (name && name.length >= nameMinLength) {
     return {
       valid: true,
     };

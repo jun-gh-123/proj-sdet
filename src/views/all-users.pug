@@ -13,4 +13,5 @@ html
         each user in users
           tr
             td= user.name
-            td= user.email
+            td
+              a(href=`/users?email=${user.email}`)=user.email

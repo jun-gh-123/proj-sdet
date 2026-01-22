@@ -1,0 +1,9 @@
+doctype html
+html
+  head
+    title #{users[0].email}
+  body
+    h1=users[0].email
+    form(action="/users/delete", method="post")
+      input(type="hidden", name="email", id="email", value=(users[0].email))
+      button(type="submit") Delete User  

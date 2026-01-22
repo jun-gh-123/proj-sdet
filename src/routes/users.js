@@ -23,15 +23,17 @@ router.get("/", async (req, res) => {
   const { email } = req.query;
 
   let result;
+  let pug_template = "all-users";
   if (email) {
     result = await pool.query("SELECT * FROM users WHERE email = $1", [email]);
+    pug_template = "user-details";
   } else {
     result = await pool.query("SELECT * FROM users");
   }
 
   return respond(
     req,
-    () => res.render("all-users", { users: result.rows }),
+    () => res.render(pug_template, { users: result.rows }),
     () => res.json(result.rows)
   );
 });
@@ -83,8 +85,8 @@ router.post("/", async (req, res) => {
   );
 });
 
-router.delete("/", async (req, res) => {
-  const { email } = req.query;
+router.post("/delete", async (req, res) => {
+  const { email } = req.body;
 
   if (!email) {
     return res.status(400).json({ error: "Email required." });
@@ -99,7 +101,11 @@ router.delete("/", async (req, res) => {
     return res.status(404).json({ error: "User not found." });
   }
 
-  res.status(200).json(result.rows[0]);
+  return respond(
+    req,
+    () => res.redirect("/users"),
+    () => res.status(200).json(result.rows[0])
+  );
 });
 
 // front end

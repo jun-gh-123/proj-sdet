@@ -24,8 +24,12 @@ export async function getUser(email) {
 }
 
 export async function deleteUser(data) {
-  const res = await fetch(`${baseURL}/users?email=${data.email}`, {
-    method: "DELETE",
+  const res = await fetch(`${baseURL}/users/delete`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(data),
   });
 
   return await res.json();
