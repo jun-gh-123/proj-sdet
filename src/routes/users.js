@@ -78,7 +78,7 @@ router.post("/", async (req, res) => {
 
   return respond(
     req,
-    () => res.redirect("/users/view"),
+    () => res.redirect("/users"),
     () => res.status(201).json(result.rows[0])
   );
 });
