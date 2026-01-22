@@ -9,7 +9,7 @@ export function validateName(name) {
 
   return {
     valid: false,
-    reason: `Name length is less than ${nameMinLength}.`,
+    reason: `Length of "${name}" is less than ${nameMinLength}.`,
   };
 }
 

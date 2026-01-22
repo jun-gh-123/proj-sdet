@@ -1,7 +1,7 @@
 const baseURL = typeof window === "undefined" ? "http://app:3000" : "";
 
 export async function createUser(data) {
-  const res = await fetch(`${baseURL}/users`, {
+  const res = await fetch(`${baseURL}/users/new`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",

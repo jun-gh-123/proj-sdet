@@ -47,7 +47,13 @@ router.get("/", async (req, res) => {
   );
 });
 
-router.post("/", async (req, res) => {
+router.post("/new", async (req, res) => {
+  res.set({
+    "Cache-Control": "no-store, no-cache, must-revalidate, private",
+    Pragma: "no-cache",
+    Expires: "0",
+  });
+
   const { name, email } = req.body;
 
   const errors = {};
@@ -66,7 +72,7 @@ router.post("/", async (req, res) => {
   if (errors.name || errors.email) {
     return respond(
       req,
-      () => res.render("create-user", { errors, formData }),
+      () => res.status(303).render("create-user", { errors, formData }),
       () => res.status(201).json(errors)
     );
   }
@@ -82,15 +88,50 @@ router.post("/", async (req, res) => {
 
     return respond(
       req,
-      () => res.render("create-user", { errors, formData }),
+      () => res.status(303).render("create-user", { errors, formData }),
       () => res.status(400).json(errors)
     );
   }
 
   return respond(
     req,
-    () => res.redirect("/users"),
+    () => res.redirect(303, "/users"),
     () => res.status(201).json(result.rows[0])
+  );
+});
+
+router.post("/change_name", async (req, res) => {
+  const { name, email } = req.body;
+
+  if (!email) {
+    return res.status(400).json({ error: "Email required." });
+  }
+
+  let users = await pool.query("SELECT * FROM users WHERE email = $1", [email]);
+
+  if (!(users && users.rows && users.rows.length)) {
+    return res.status(400).json({ error: "User not found." });
+  }
+
+  const nameValidation = validateName(name);
+
+  if (!nameValidation.valid) {
+    return res.status(400).json({ error: nameValidation.reason });
+  }
+
+  try {
+    users = await pool.query(
+      "UPDATE users SET name=$1 WHERE email=$2 RETURNING *",
+      [name, email]
+    );
+  } catch (err) {
+    return res.status(400).json({ error: err.message });
+  }
+
+  return respond(
+    req,
+    () => res.redirect(`/users?email=${email}`),
+    () => res.status(201).json(users.rows[0])
   );
 });
 

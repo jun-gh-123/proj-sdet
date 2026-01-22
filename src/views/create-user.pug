@@ -15,7 +15,7 @@ html
   body
     h1 Create User
     
-    form(action="/users", method="post")
+    form(action="/users/new", method="post")
       .form-row
         label(for="name") Name:
         input(type="text", name="name", id="name", value=(formData && formData.name) || '', required)

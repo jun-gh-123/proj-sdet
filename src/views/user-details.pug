@@ -4,8 +4,16 @@ if users[0]
   html
     head
       title #{users[0].email}
+      style.
+        form {
+          margin-bottom: 20px;
+        }
     body
       h1=users[0].email
+      form(action="/users/change_name", method="post")
+        input(type="hidden", name="email", id="email", value=(users[0].email))
+        input(type="text", name="name", id="name", value=(users[0].name))
+        button(type="submit") Change Name
       form(action="/users/delete", method="post")
         input(type="hidden", name="email", id="email", value=(users[0].email))
         button(type="submit") Delete User
