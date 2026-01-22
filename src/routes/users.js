@@ -24,6 +24,7 @@ router.get("/", async (req, res) => {
 
   let result;
   let pug_template = "all-users";
+
   if (email) {
     result = await pool.query("SELECT * FROM users WHERE email = $1", [email]);
     pug_template = "user-details";
@@ -33,7 +34,15 @@ router.get("/", async (req, res) => {
 
   return respond(
     req,
-    () => res.render(pug_template, { users: result.rows }),
+    () => {
+      res.set({
+        "Cache-Control": "no-store, no-cache, must-revalidate, private",
+        Pragma: "no-cache",
+        Expires: "0",
+      });
+
+      res.render(pug_template, { users: result.rows });
+    },
     () => res.json(result.rows)
   );
 });
@@ -103,7 +112,7 @@ router.post("/delete", async (req, res) => {
 
   return respond(
     req,
-    () => res.redirect("/users"),
+    () => res.redirect(303, "/users"),
     () => res.status(200).json(result.rows[0])
   );
 });

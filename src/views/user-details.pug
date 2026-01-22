@@ -1,9 +1,18 @@
 doctype html
-html
-  head
-    title #{users[0].email}
-  body
-    h1=users[0].email
-    form(action="/users/delete", method="post")
-      input(type="hidden", name="email", id="email", value=(users[0].email))
-      button(type="submit") Delete User  
+
+if users[0]
+  html
+    head
+      title #{users[0].email}
+    body
+      h1=users[0].email
+      form(action="/users/delete", method="post")
+        input(type="hidden", name="email", id="email", value=(users[0].email))
+        button(type="submit") Delete User
+else
+  html
+    head
+      title User Not Found
+      body
+        h1 User Not Found
+        a(href="/users") Go to all users page
