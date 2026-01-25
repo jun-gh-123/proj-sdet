@@ -95,7 +95,7 @@ router.post("/new", async (req, res) => {
 
   return respond(
     req,
-    () => res.redirect(303, "/users"),
+    () => res.redirect(303, `/users?email=${email}`),
     () => res.status(201).json(result.rows[0])
   );
 });

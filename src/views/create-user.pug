@@ -1,7 +1,7 @@
 doctype html
 html
   head
-    title Create User
+    title Proj SDET: Create User
     style.
       .error-msg {
         color: red;    
@@ -27,7 +27,7 @@ html
         if errors.email
           .error-msg #{errors.email}
       .form-row
-        button(type="submit") Submit
+        button(type="submit", id="submit-create-user") Submit
 
     if errors.form
       .error-msg #{errors.form}

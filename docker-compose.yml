@@ -49,8 +49,8 @@ services:
     environment:
       NO_PROXY: localhost,app
     volumes:
-      - ./tests/e2e:/app/e2e
-      - ./db:/app/db
+      - ./playwright.config.ts:/app/playwright.config.ts
+      - ./tests/e2e:/app/tests/e2e
 
 volumes:
   pgdata:
